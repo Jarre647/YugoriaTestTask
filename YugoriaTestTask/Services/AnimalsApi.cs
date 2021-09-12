@@ -148,7 +148,6 @@ namespace YugoriaTestTask.Services
             return await GetHelpedTypes();
         }
 
-
         private async Task<HelpedTypesViewModel> GetHelpedTypes()
         {
             HelpedTypesViewModel result = new HelpedTypesViewModel();
@@ -161,6 +160,51 @@ namespace YugoriaTestTask.Services
             result.Locations = getLocations.Value;
             result.SkinColors = getSkinColors.Value;
 
+            return result;
+        }
+
+        public async Task<List<AnimalModel>> GetFilteredAnimalsAsync(SearchViewModel searchView)
+        {
+            var getCategoriesTypesQuery = from animal in _unitOfWork.GetRepository<AnimalModel>().All().AsQueryable()
+                                          join kind in _unitOfWork.GetRepository<KindAnimalModel>().All().AsQueryable() on animal.KindAnimalId equals kind.Id
+                                          join location in _unitOfWork.GetRepository<LocationModel>().All().AsQueryable() on animal.LocationId equals location.Id
+                                          join region in _unitOfWork.GetRepository<RegionModel>().All().AsQueryable() on animal.RegionId equals region.Id
+                                          join skin in _unitOfWork.GetRepository<SkinColorModel>().All().AsQueryable() on animal.SkinColorId equals skin.Id                                          
+                                          select new
+                                          {
+                                              AnimalId = animal.Id,
+                                              AnimalName = animal.AnimalName,
+                                              KindAnimalId = kind.Id,
+                                              LocationId = location.Id,
+                                              RegionId = region.Id,
+                                              SkinColorId = skin.Id
+                                          };
+            if (searchView.KindAnimalId != null)
+            {
+                getCategoriesTypesQuery = getCategoriesTypesQuery.Where(item => searchView.KindAnimalId.Contains(item.KindAnimalId));
+            }
+            if (searchView.RegionId != null)
+            {
+                getCategoriesTypesQuery = getCategoriesTypesQuery.Where(item => searchView.RegionId.Contains(item.RegionId));
+            }
+            if (searchView.SkinColorId != null)
+            {
+                getCategoriesTypesQuery = getCategoriesTypesQuery.Where(item => searchView.SkinColorId.Contains(item.SkinColorId));
+            }
+
+            var result = new List<AnimalModel>();
+            var getCategoriesTypes = await getCategoriesTypesQuery.ToListAsync();
+            foreach (var item in getCategoriesTypes)
+            {
+                var helper = new AnimalModel();
+                helper.Id = item.AnimalId;
+                helper.AnimalName = item.AnimalName;
+                helper.KindAnimalId = item.KindAnimalId;
+                helper.LocationId = item.LocationId;
+                helper.RegionId = item.RegionId;
+                helper.SkinColorId = item.SkinColorId;
+                result.Add(helper);
+            }
             return result;
         }
     }

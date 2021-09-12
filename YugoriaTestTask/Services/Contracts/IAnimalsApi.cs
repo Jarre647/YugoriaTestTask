@@ -20,5 +20,6 @@ namespace YugoriaTestTask.Services.Contracts
         Task DeleteAnimalAsync(int id);
         Task<List<AnimalsViewModel>> GetAnimalsAsync();
         Task<HelpedTypesViewModel> GetCachingHelpedTypesAsync();
+        Task<List<AnimalModel>> GetFilteredAnimalsAsync(SearchViewModel searchView);
     }
 }
