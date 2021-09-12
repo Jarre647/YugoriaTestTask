@@ -54,8 +54,6 @@ export default class CreateExpenseAndIncome extends React.Component<IMainProps, 
             SkinColors: []
         }
 
-        this.handleExpenseAndIncome = this.handleExpenseAndIncome.bind(this);
-
         this.handleAnimalNameChange = this.handleAnimalNameChange.bind(this);
         this.handleKindOnChange = this.handleKindOnChange.bind(this);
         this.handleLocationOnChange = this.handleLocationOnChange.bind(this);
@@ -64,17 +62,6 @@ export default class CreateExpenseAndIncome extends React.Component<IMainProps, 
         this.handleRegionOnChange = this.handleRegionOnChange.bind(this);
     }
 
-    handleExpenseAndIncome(event: React.ChangeEvent<HTMLInputElement>) {
-        const expenseAndIncome = event.target.value;
-        this.setState = () => {
-            return {
-                expenseAndIncome,
-                validContent: expenseAndIncome.length <= 200
-            }
-        };
-        return;
-    }
-    
     handleAnimalNameChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({animalName: event.target.value})
     }
